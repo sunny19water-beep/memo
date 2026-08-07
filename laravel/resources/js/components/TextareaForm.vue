@@ -2,17 +2,26 @@
 import { ref } from 'vue'
 import PlusSvg from './svgs/PlusSvg.vue'
 
-const content = ref('')
-// const contents=[
-//
-// ]
-//
-// function save(){
-//
-// }
+const sentence = ref('')
+const contents = ref([{
+    id:0,
+    content:'NULL'
+}])
+const id = ref(1)
 
+function save() {
+    if (sentence.value.trim() === '') return
 
+    contents.value.push({
+        id: id.value,
+        content: sentence.value
+    });
+
+    id.value++
+    sentence.value = ''
+}
 </script>
+
 
 <template>
     <div class="outside">
@@ -24,14 +33,16 @@ const content = ref('')
 
         <div class="content">
           <textarea
-              v-model="content"
+              v-model="sentence"
+              :class="{ active: sentence !== '' }"
               placeholder="メモを入力してください...
     (Enterで保存、Shift+Enterで改行)"
           ></textarea>
         </div>
 
         <div class="save">
-            <button>
+            <button @click="save"
+                    :disabled="sentence.trim() === ''">
                 <PlusSvg />
                 メモを保存
             </button>
@@ -40,6 +51,7 @@ const content = ref('')
 </template>
 
 <style scoped>
+
 .outside{
     border-radius: 10px;
     background-color: #fff;
@@ -51,10 +63,19 @@ const content = ref('')
     text-align: left;
     gap: 10px;
 }
+
 .content{
     margin-top: 15px;
     padding: 10px;
     border-radius: 10px;
+}
+
+textarea{
+    border: 1px solid #ccc;
+}
+
+textarea.active{
+    border: 1px solid orange;
 }
 
 .save {
@@ -70,5 +91,9 @@ const content = ref('')
     align-items: center;
     padding: 10px;
     border-radius: 10px;
+}
+
+button:disabled {
+    background-color: #FFA726; /* 元のオレンジ */
 }
 </style>

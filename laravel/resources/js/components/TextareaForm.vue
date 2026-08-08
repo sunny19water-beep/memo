@@ -58,14 +58,27 @@ function save() {
 <style scoped>
 
 
+
 .outside {
+    width: 90%;
+    max-width: 700px;
+    margin: 0 auto;
+
     border-radius: 10px;
-    border: 3px solid red;
+    border: 1px solid #FFA726;
     background-color: #fff;
     padding: 20px;
-    text-align:center;
-    justify-content: center;
-    align-items: center;
+    box-sizing: border-box;
+}
+
+textarea {
+    width: 100%;
+    height: 150px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    resize: none;
 }
 
 .title{
@@ -80,16 +93,15 @@ function save() {
     border-radius: 10px;
 }
 
-textarea{
-    border: 1px solid #ccc;
-}
 
 textarea.active{
-    border: 1px solid orange;
+    border: 1px solid #c78f26;
 }
 
 .save {
     margin-top: 20px;
+    display: flex;
+    justify-content: center;
 }
 
 .save button{

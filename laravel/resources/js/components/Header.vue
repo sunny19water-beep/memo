@@ -18,8 +18,11 @@ import DocumentSvg from './svgs/DocumentSvg.vue'
     justify-content: center;
 }
 header{
+    padding: 20px;
     text-align: center;
     font-size: 100%;
+    background-color: #f8cf91;
+    margin-bottom: 20px;
 }
 </style>
 

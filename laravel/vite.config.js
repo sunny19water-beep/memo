@@ -25,5 +25,17 @@ export default defineConfig({
         host: true,
         port: "5173",
         hmr: {host: "localhost"},
+
+
+        watch: {
+            usePolling: true,
+            interval: 100, // ms単位、好みで調整可
+        },//ここの部分に変更を加えたAIで
     },
+    // server: {
+    //     watch: {
+    //         usePolling: true,
+    //         interval: 100, // ms単位、好みで調整可
+    //     },
+    // },
 })

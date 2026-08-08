@@ -19,5 +19,7 @@ import DocumentSvg from './svgs/DocumentSvg.vue'
 }
 header{
     text-align: center;
+    font-size: 100%;
 }
 </style>
+

@@ -2,24 +2,27 @@
 import { ref } from 'vue'
 import PlusSvg from './svgs/PlusSvg.vue'
 
-const sentence = ref('')
+const sentence = ref('');
 const contents = ref([{
     id:0,
     content:'NULL'
-}])
-const id = ref(1)
+}]);
+const id = ref(1);
 
 function save() {
-    if (sentence.value.trim() === '') return
+    if (sentence.value.trim() === '') {
+        return;
+    }
 
     contents.value.push({
         id: id.value,
         content: sentence.value
     });
 
-    id.value++
-    sentence.value = ''
+    id.value++;
+    sentence.value = '';
 }
+
 </script>
 
 
@@ -33,6 +36,7 @@ function save() {
 
         <div class="content">
           <textarea
+              id="memo-content"
               v-model="sentence"
               :class="{ active: sentence !== '' }"
               placeholder="メモを入力してください...
@@ -47,15 +51,21 @@ function save() {
                 メモを保存
             </button>
         </div>
+
     </div>
 </template>
 
 <style scoped>
 
-.outside{
+
+.outside {
     border-radius: 10px;
+    border: 3px solid red;
     background-color: #fff;
     padding: 20px;
+    text-align:center;
+    justify-content: center;
+    align-items: center;
 }
 
 .title{

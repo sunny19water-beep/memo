@@ -4,24 +4,36 @@ import PlusSvg from './svgs/PlusSvg.vue'
 
 const sentence = ref('');
 const contents = ref([{
-    id:0,
     content:'NULL'
 }]);
 const id = ref(1);
 
-function save() {
+async　function save() {
     if (sentence.value.trim() === '') {
         return;
     }
 
+    const memo = {
+        content: sentence.value
+    }//jsonで送るに向けてlaravel側の変数の名前を付けている
+
+    const response = await fetch('/api/memos', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+
+        body: JSON.stringify(memo)
+    })
     contents.value.push({
-        id: id.value,
+
         content: sentence.value
     });
 
-    id.value++;
     sentence.value = '';
 }
+
+
 
 </script>
 
@@ -39,6 +51,7 @@ function save() {
               id="memo-content"
               v-model="sentence"
               :class="{ active: sentence !== '' }"
+              @keydown.enter.exact.prevent="save"
               placeholder="メモを入力してください...
     (Enterで保存、Shift+Enterで改行)"
           ></textarea>

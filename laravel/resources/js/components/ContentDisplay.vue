@@ -1,25 +1,47 @@
 <script setup lang="ts">
 import DocumentSvg from './svgs/DocumentSvg.vue'
 import TrashSvg from './svgs/TrashSvg.vue'
-import { ref } from 'vue'
+// import { ref } from 'vue'
 
-// ------これはmockデータです------ //
-// これは本番のDBから持ってくる
-const todos = ref([
-    {
-        id: 1,
-        title: 'Vueの勉強をする',
-        created_at: '2026-08-11 10:00:00'
-    },
-    {
-        id: 2,
-        title: 'LaravelのAPIを作る',
-        created_at: '2026-08-10 15:30:00'
-    }
-])
+type Todo = {
+    id: number
+    content: string
+    created_at: string
+}
+// // このページに訪れたときに実行
+// const todos = ref<Todo[]>([])
+// const response = await fetch('/api/memos')
+// const data = await response.json()
+// todos.value = data
 
-const count = ref()
-//------ここまでがmockデータです------ //
+const { todos } = defineProps<{
+    todos: Todo[]
+}>()
+
+// //Memoが追加された際に実行
+// async function updateTodo() {
+//     const response = await fetch('/api/memos')
+//     const data = await response.json()
+//     todos.value = data
+// }
+
+// // ------これはmockデータです------ //
+// // これは本番のDBから持ってくる
+// const todos = ref([
+//     {
+//         id: 1,
+//         title: 'Vueの勉強をする',
+//         created_at: '2026-08-11 10:00:00'
+//     },
+//     {
+//         id: 2,
+//         title: 'LaravelのAPIを作る',
+//         created_at: '2026-08-10 15:30:00'
+//     }
+// ])
+//
+// const count = ref()
+// //------ここまでがmockデータです------ //
 
 
 </script>
@@ -37,7 +59,7 @@ const count = ref()
         <ul>
             <li v-for="todo in todos" :key="todo.id">
                 <div class="task">
-                    <div class="strong">{{ todo.title }}</div>
+                    <div class="strong">{{ todo.content}}</div>
                         <button class="trush">
                             <TrashSvg/>
                         </button>
@@ -84,7 +106,7 @@ const count = ref()
     border-radius: 5px;
     padding: 10px;
     background-color: #f5f5f5;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .trush {

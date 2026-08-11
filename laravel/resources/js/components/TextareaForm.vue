@@ -3,12 +3,9 @@ import { ref } from 'vue'
 import PlusSvg from './svgs/PlusSvg.vue'
 
 const sentence = ref('');
-const contents = ref([{
-    content:'NULL'
-}]);
-const id = ref(1);
+const emit =  defineEmits(['saved'])
 
-async　function save() {
+async function save() {
     if (sentence.value.trim() === '') {
         return;
     }
@@ -25,10 +22,8 @@ async　function save() {
 
         body: JSON.stringify(memo)
     })
-    contents.value.push({
 
-        content: sentence.value
-    });
+    emit('saved')
 
     sentence.value = '';
 }

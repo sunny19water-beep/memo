@@ -14,4 +14,10 @@ class MemoController extends Controller
             'content' => $request->content,
         ]);
     }
+
+    public function index()//ここに呼ばれたときにDBの内容を全部jsonにしてContentDisplayに送信する
+    {
+
+
+    }
 }

@@ -129,6 +129,6 @@ textarea.active{
 }
 
 button:disabled {
-    background-color: #FFA726; /* 元のオレンジ */
+    background-color: #FFA726;
 }
 </style>

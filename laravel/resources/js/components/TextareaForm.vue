@@ -14,6 +14,8 @@ async function save() {
         content: sentence.value
     }//jsonで送るに向けてlaravel側の変数の名前を付けている
 
+    sentence.value = '';
+
     const response = await fetch('/api/memos', {
         method: 'POST',
         headers: {
@@ -25,7 +27,6 @@ async function save() {
 
     emit('saved')
 
-    sentence.value = '';
 }
 
 
@@ -55,6 +56,7 @@ async function save() {
         <div class="save">
             <button @click="save"
                     :disabled="sentence.trim() === ''">
+
                 <PlusSvg />
                 メモを保存
             </button>

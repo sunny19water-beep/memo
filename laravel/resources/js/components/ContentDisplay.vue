@@ -1,24 +1,25 @@
 <script setup lang="ts">
-import DocumentSvg from './svgs/DocumentSvg.vue'
-import TrashSvg from './svgs/TrashSvg.vue'
+import DocumentSvg from "./svgs/DocumentSvg.vue";
+import TrashSvg from "./svgs/TrashSvg.vue";
+import EditSvg from "./svgs/EditSvg.vue";
 // import { ref } from 'vue'
-const emit =  defineEmits(['delete'])
+const emit = defineEmits(["delete"]);
 
 type Todo = {
-    id: number
-    content: string
-    created_at: string
-}
+  id: number;
+  content: string;
+  created_at: string;
+};
 
 const { todos } = defineProps<{
-    todos: Todo[]
-}>()
+  todos: Todo[];
+}>();
 
 async function deleteMemo(id: number) {
-    await fetch(`/api/memos/${id}`, {
-        method: 'DELETE'
-    })
-    emit('delete')
+  await fetch(`/api/memos/${id}`, {
+    method: "DELETE",
+  });
+  emit("delete");
 }
 </script>
 
@@ -35,11 +36,21 @@ async function deleteMemo(id: number) {
     <ul>
       <li v-for="todo in todos" :key="todo.id">
         <div class="task">
-          <div class="strong">{{ todo.content }}</div>
-              <button @click="deleteMemo(todo.id)" class="trush">
-                <TrashSvg />
-              </button>
-          <div class="week">{{ todo.created_at }}</div>
+          <div class="strong">
+            {{ todo.content }}
+          </div>
+
+          <button @click="deleteMemo(todo.id)" class="trush">
+            <TrashSvg />
+          </button>
+
+          <div class="week">
+            {{ todo.created_at }}
+          </div>
+
+          <div class="Edit">
+            <EditSvg />
+          </div>
         </div>
       </li>
     </ul>
@@ -79,16 +90,6 @@ async function deleteMemo(id: number) {
   margin-bottom: 10px;
 }
 
-.trush {
-  display: none;
-  position: absolute;
-  top: 15px;
-  right: 15px;
-}
-
-.task:hover .trush {
-  display: block;
-}
 .task .strong {
   font-weight: 400;
   text-align: left;
@@ -98,5 +99,24 @@ async function deleteMemo(id: number) {
   font-size: 14px;
   color: #888;
   text-align: left;
+}
+
+.trush {
+  display: none;
+  position: absolute;
+  top: 10px;
+  right: 15px;
+}
+
+.Edit {
+  display: none;
+  position: absolute;
+  top: 35px;
+  right: 10px;
+}
+
+.task:hover .trush,
+.task:hover .Edit {
+  display: block;
 }
 </style>

@@ -32,7 +32,7 @@ onMounted(()=>{
     <div class="background">
         <Header/>
         <TextareaForm @saved="updateTodo"/>
-        <ContentDisplay :todos="todos"/>
+        <ContentDisplay :todos="todos" @delete="updateTodo" />
     </div>
 </template>
 

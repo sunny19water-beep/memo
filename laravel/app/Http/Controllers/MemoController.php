@@ -11,7 +11,7 @@ class MemoController extends Controller
     public function store(Request $request)
     {
 
-//        dd($request->content);
+//
         Memo::create([
             'content' => $request->content,
         ]);
@@ -31,7 +31,7 @@ class MemoController extends Controller
     public function update(Request $request, Memo $memo)
     {
         $memo->update([
-            'content' => $request->content,
+            'content' => $request -> content,
         ]);
     }
 

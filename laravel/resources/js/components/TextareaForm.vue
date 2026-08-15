@@ -5,7 +5,7 @@ import PlusSvg from "./svgs/PlusSvg.vue";
 const sentence = ref("");
 
 //編集
-const emit = defineEmits(["saved"]);
+const emit = defineEmits(["saved","edited"]);
 
 type Memo = {
   id: number;
@@ -76,7 +76,8 @@ async function save() {
   <div class="outside">
     <div class="title">
       <PlusSvg />
-      <h2>新しいメモ</h2>
+      <h2 v-if="editingMemo" class="change">編集中...</h2>
+      <h2 v-else>新しいメモ</h2>
     </div>
 
     <div class="content">
@@ -157,5 +158,9 @@ textarea.active {
 
 button:disabled {
   background-color: #ffa726;
+}
+
+.change {
+  color: red;
 }
 </style>

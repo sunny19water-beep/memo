@@ -28,5 +28,12 @@ class MemoController extends Controller
         $memo->delete();
     }
 
+    public function update(Request $request, Memo $memo)
+    {
+        $memo->update([
+            'content' => $request->content,
+        ]);
+    }
+
 
 }

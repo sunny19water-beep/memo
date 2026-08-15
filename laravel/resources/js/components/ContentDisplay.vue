@@ -2,8 +2,9 @@
 import DocumentSvg from "./svgs/DocumentSvg.vue";
 import TrashSvg from "./svgs/TrashSvg.vue";
 import EditSvg from "./svgs/EditSvg.vue";
+import { ref } from "vue";
 // import { ref } from 'vue'
-const emit = defineEmits(["delete"]);
+const emit = defineEmits(["delete", "edit"]);
 
 type Todo = {
   id: number;
@@ -20,6 +21,13 @@ async function deleteMemo(id: number) {
     method: "DELETE",
   });
   emit("delete");
+}
+
+async function edit(id: number, content: string) {
+  // このかんすうでテキストエリアに表示させるようにしたい
+  //propsとemitで全部textarea.Vueに渡せばいい
+  emit("edit", { id, content });
+
 }
 </script>
 
@@ -48,7 +56,7 @@ async function deleteMemo(id: number) {
             {{ todo.created_at }}
           </div>
 
-          <div class="Edit">
+          <div class="Edit" @click="edit(todo.id, todo.content)">
             <EditSvg />
           </div>
         </div>
@@ -72,10 +80,7 @@ async function deleteMemo(id: number) {
 }
 
 .title .memo_count {
-  padding-top: 5px;
-  padding-bottom: 5px;
-  padding-left: 3px;
-  padding-right: 3px;
+  padding: 5px 3px;
   border-radius: 10px;
   border: 1px solid black;
   margin-left: auto;
@@ -88,6 +93,7 @@ async function deleteMemo(id: number) {
   padding: 10px;
   background-color: #f5f5f5;
   margin-bottom: 10px;
+  white-space: pre-wrap;
 }
 
 .task .strong {

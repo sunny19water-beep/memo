@@ -9,21 +9,30 @@ type Todo = {
     created_at: string
 }
 const todos = ref<Todo[]>([])
+const editingMemo = ref<{ id: number, content: string } | null>(null)//開いた状態ではメモの中身がぞんざいしないためこのような記述になる
 
 async function updateTodo() {
     const response = await fetch('/api/memos')
-    const data = await response.json()//ここのデータは緩衝材になっているんだね
-    //デバック始
-    console.log(data)
-    console.log(data.content)
-    //デバック終
+    const data = await response.json()
     todos.value = data
 
 }
 
 onMounted(()=>{
-    updateTodo()
+    updateTodo() //最初に起動させるため
 })
+
+function senddata(data: { id: number, content: string }) {
+  //Contentdisplay -> app.vue -> textareaform.vue
+  editingMemo.value = data
+}
+
+function edittodo() {
+  editingMemo.value = null
+  updateTodo()
+}
+
+
 
 </script>
 
@@ -31,8 +40,18 @@ onMounted(()=>{
 <!--  <router-view />-->
     <div class="background">
         <Header/>
-        <TextareaForm @saved="updateTodo"/>
-        <ContentDisplay :todos="todos" @delete="updateTodo" />
+
+        <TextareaForm
+            @saved="updateTodo"
+            @edited="edittodo"
+            :editing-memo="editingMemo"
+        />
+
+        <ContentDisplay
+            :todos="todos"
+            @delete="updateTodo"
+            @edit="senddata"
+        />
     </div>
 </template>
 

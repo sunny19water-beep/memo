@@ -35,5 +35,11 @@ class MemoController extends Controller
         ]);
     }
 
+    public function favorite(Memo $memo)
+    {
+        $memo->favorite = !$memo->favorite;
+        $memo->save();
+    }
+
 
 }

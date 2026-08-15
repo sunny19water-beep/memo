@@ -2,33 +2,69 @@
 import DocumentSvg from "./svgs/DocumentSvg.vue";
 import TrashSvg from "./svgs/TrashSvg.vue";
 import EditSvg from "./svgs/EditSvg.vue";
-import { ref } from "vue";
-// import { ref } from 'vue'
-const emit = defineEmits(["delete", "edit"]);
+import FavoriteSvg from "./svgs/FavoriteSvg.vue";
+import UnFavoriteSvg from "./svgs/UnFavoriteSvg.vue";
+
+const emit = defineEmits(["delete", "edit","favorite"]);
 
 type Todo = {
   id: number;
   content: string;
   created_at: string;
+  favorite: boolean;
 };
 
 const { todos } = defineProps<{
   todos: Todo[];
 }>();
-
+//削除
 async function deleteMemo(id: number) {
   await fetch(`/api/memos/${id}`, {
     method: "DELETE",
   });
+
   emit("delete");
 }
+//
 
+//編集
 async function edit(id: number, content: string) {
-  // このかんすうでテキストエリアに表示させるようにしたい
-  //propsとemitで全部textarea.Vueに渡せばいい
   emit("edit", { id, content });
+} //
 
+//お気に入りボタンの状態変化
+async function boolfavorite(id: number) {
+  // if (todos[id].favorite) {
+  //   await fetch(`/api/memos/${id}`, {
+  //     method: "PATCH",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       favorite: false,
+  //     }),
+  //   });
+  // } else {
+  //   await fetch(`/api/memos/${id}`, {
+  //     method: "PATCH",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       favorite: true,
+  //     }),
+  //   });
+  // }
+
+    const response = await fetch(`/api/memos/${id}/favorite`, {
+        method: "PATCH",
+    });
+
+  emit("favorite")
+    return
 }
+//
+
 </script>
 
 <template>
@@ -36,6 +72,7 @@ async function edit(id: number, content: string) {
     <div class="title">
       <DocumentSvg />
       <h1>保存されたメモ</h1>
+
       <div class="memo_count">
         <p>{{ todos.length }}件</p>
       </div>
@@ -44,8 +81,18 @@ async function edit(id: number, content: string) {
     <ul>
       <li v-for="todo in todos" :key="todo.id">
         <div class="task">
-          <div class="strong">
-            {{ todo.content }}
+          <div class="favorite">
+            <button v-if="todo.favorite" @click="boolfavorite(todo.id)">
+              <FavoriteSvg />
+            </button>
+
+            <button v-else @click="boolfavorite(todo.id)">
+              <UnFavoriteSvg />
+            </button>
+
+            <div class="strong">
+              {{ todo.content }}
+            </div>
           </div>
 
           <button @click="deleteMemo(todo.id)" class="trush">
@@ -71,6 +118,7 @@ async function edit(id: number, content: string) {
   max-width: 700px;
   margin: 0 auto;
 }
+
 .title {
   display: flex;
   gap: 10px;
@@ -124,5 +172,26 @@ async function edit(id: number, content: string) {
 .task:hover .trush,
 .task:hover .Edit {
   display: block;
+}
+.favorite {
+  display: flex;
+  align-items: center;
+  text-align: left;
+}
+
+.favorite button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.favorite svg {
+  transform: scale(0.8);
 }
 </style>

@@ -7,9 +7,11 @@ const sentence = ref("");
 //編集
 const emit = defineEmits(["saved","edited"]);
 
+//編集
 type Memo = {
   id: number;
   content: string;
+
 };
 
 const props = defineProps<{
@@ -24,7 +26,6 @@ watch(
     }
   },
 );
-
 //
 
 //保存
@@ -70,13 +71,14 @@ async function save() {
   emit("saved");
 }
 //
+
 </script>
 
 <template>
   <div class="outside">
     <div class="title">
       <PlusSvg />
-      <h2 v-if="editingMemo" class="change">編集中...</h2>
+      <h2 v-if="editingMemo" class="change">編集中...　(メモを保存が押されたら更新されます）</h2>
       <h2 v-else>新しいメモ</h2>
     </div>
 

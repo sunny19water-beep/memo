@@ -15,4 +15,8 @@ class Memo extends Model
     {
         return $date->format('Y-m-d H:i:s');
     }
+
+    protected $casts = [
+        'favorite' => 'boolean',
+    ];
 }

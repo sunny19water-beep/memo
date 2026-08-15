@@ -7,6 +7,7 @@ type Todo = {
     id: number
     content: string
     created_at: string
+    favorite: boolean
 }
 const todos = ref<Todo[]>([])
 const editingMemo = ref<{ id: number, content: string } | null>(null)//開いた状態ではメモの中身がぞんざいしないためこのような記述になる
@@ -22,6 +23,7 @@ onMounted(()=>{
     updateTodo() //最初に起動させるため
 })
 
+//編集
 function senddata(data: { id: number, content: string }) {
   //Contentdisplay -> app.vue -> textareaform.vue
   editingMemo.value = data
@@ -31,6 +33,8 @@ function edittodo() {
   editingMemo.value = null
   updateTodo()
 }
+//
+
 
 
 
@@ -51,6 +55,7 @@ function edittodo() {
             :todos="todos"
             @delete="updateTodo"
             @edit="senddata"
+            @favorite="updateTodo"
         />
     </div>
 </template>

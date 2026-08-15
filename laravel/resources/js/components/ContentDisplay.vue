@@ -17,6 +17,7 @@ type Todo = {
 const { todos } = defineProps<{
   todos: Todo[];
 }>();
+
 //削除
 async function deleteMemo(id: number) {
   await fetch(`/api/memos/${id}`, {
@@ -79,8 +80,10 @@ async function boolfavorite(id: number) {
     </div>
 
     <ul>
+
+<!--        //お気に入り部分-->
       <li v-for="todo in todos" :key="todo.id">
-        <div class="task">
+        <div class="task" v-if="todo.favorite">
           <div class="favorite">
             <button v-if="todo.favorite" @click="boolfavorite(todo.id)">
               <FavoriteSvg />
@@ -95,9 +98,9 @@ async function boolfavorite(id: number) {
             </div>
           </div>
 
-          <button @click="deleteMemo(todo.id)" class="trush">
-            <TrashSvg />
-          </button>
+<!--          <button @click="deleteMemo(todo.id)" class="trush">-->
+<!--            <TrashSvg />-->
+<!--          </button>-->
 
           <div class="week">
             {{ todo.created_at }}
@@ -108,6 +111,44 @@ async function boolfavorite(id: number) {
           </div>
         </div>
       </li>
+<!--        //お気に入り部分　終-->
+
+
+
+
+
+<!--        //お気にいられてない部分　開-->
+        <li v-for="todo in todos" :key="todo.id">
+            <div class="task" v-if="!(todo.favorite)">
+                <div class="favorite">
+                    <button v-if="todo.favorite" @click="boolfavorite(todo.id)">
+                        <FavoriteSvg />
+                    </button>
+
+                    <button v-else @click="boolfavorite(todo.id)">
+                        <UnFavoriteSvg />
+                    </button>
+
+                    <div class="strong">
+                        {{ todo.content }}
+                    </div>
+                </div>
+
+                <button @click="deleteMemo(todo.id)" class="trush">
+                    <TrashSvg />
+                </button>
+
+                <div class="week">
+                    {{ todo.created_at }}
+                </div>
+
+                <div class="Edit" @click="edit(todo.id, todo.content)">
+                    <EditSvg />
+                </div>
+            </div>
+        </li>
+<!--        //お気にいられていない部分　終-->
+
     </ul>
   </div>
 </template>

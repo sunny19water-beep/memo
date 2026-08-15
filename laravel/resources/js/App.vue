@@ -12,7 +12,7 @@ type Todo = {
 const todos = ref<Todo[]>([])
 const editingMemo = ref<{ id: number, content: string } | null>(null)//開いた状態ではメモの中身がぞんざいしないためこのような記述になる
 
-async function updateTodo() {
+async function updateTodo() {//再取得　更新みたいなもの
     const response = await fetch('/api/memos')
     const data = await response.json()
     todos.value = data

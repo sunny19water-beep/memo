@@ -13,7 +13,7 @@ import DocumentSvg from './svgs/DocumentSvg.vue'
 
 <style scoped>
 .title{
-    color: orange;
+    color: #ff4d00;
     display: flex;
     justify-content: center;
 }

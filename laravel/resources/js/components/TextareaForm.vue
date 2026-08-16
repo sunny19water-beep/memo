@@ -1,17 +1,53 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import PlusSvg from "./svgs/PlusSvg.vue";
+import MicSvg from "./svgs/MicSvg.vue";
 
 const sentence = ref("");
+const isRecording = ref(false);
+const emit = defineEmits(["saved", "edited"]);
 
-//編集
-const emit = defineEmits(["saved","edited"]);
+// 音声認識
+const SpeechRecognition =
+  (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+
+const recognition = new SpeechRecognition();
+
+recognition.lang = "ja-JP";
+recognition.continuous = false;
+recognition.interimResults = false;
+
+
+function toggleRecognition() {
+  if (isRecording.value) {
+    recognition.stop();
+  } else {
+    recognition.start();
+  }
+}
+recognition.onstart = () => {
+  isRecording.value = true;
+};
+
+recognition.onend = () => {
+  isRecording.value = false;
+};
+
+
+
+
+recognition.onresult = (event: any) => {
+  const text = event.results[0][0].transcript;
+
+  sentence.value = text;
+};
+
+//音声認識　終
 
 //編集
 type Memo = {
   id: number;
   content: string;
-
 };
 
 const props = defineProps<{
@@ -26,7 +62,7 @@ watch(
     }
   },
 );
-//
+//　編集終わり
 
 //保存
 
@@ -71,7 +107,6 @@ async function save() {
   emit("saved");
 }
 //
-
 </script>
 
 <template>
@@ -79,6 +114,7 @@ async function save() {
     <div class="title">
       <PlusSvg />
       <h2 v-if="editingMemo" class="change">編集中...　(メモを保存が押されたら更新されます）</h2>
+      <h2 v-else-if="isRecording" class="change">録音中... (もう一回押すと録音は止まります）</h2>
       <h2 v-else>新しいメモ</h2>
     </div>
 
@@ -94,6 +130,11 @@ async function save() {
     </div>
 
     <div class="save">
+      <button @click="toggleRecognition">
+        <MicSvg />
+        {{ isRecording ? "録音停止" : "音声入力" }}
+      </button>
+
       <button @click="save" :disabled="sentence.trim() === ''">
         <PlusSvg />
         メモを保存
@@ -145,6 +186,7 @@ textarea.active {
   margin-top: 20px;
   display: flex;
   justify-content: center;
+  gap: 10px;
 }
 
 .save button {

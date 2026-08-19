@@ -2,6 +2,7 @@
 import Header from './components/Header.vue'
 import TextareaForm from './components/TextareaForm.vue'
 import ContentDisplay from './components/ContentDisplay.vue'
+import SearchMemo from './components/SearchMemo.vue'
 import {ref,onMounted} from "vue";
 type Todo = {
     id: number
@@ -50,6 +51,7 @@ function edittodo() {
             @edited="edittodo"
             :editing-memo="editingMemo"
         />
+        <SearchMemo/>
 
         <ContentDisplay
             :todos="todos"

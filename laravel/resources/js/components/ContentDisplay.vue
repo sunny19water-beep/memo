@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import * as linkify from "linkifyjs";
 import DocumentSvg from "./svgs/DocumentSvg.vue";
 import TrashSvg from "./svgs/TrashSvg.vue";
 import EditSvg from "./svgs/EditSvg.vue";
 import FavoriteSvg from "./svgs/FavoriteSvg.vue";
 import UnFavoriteSvg from "./svgs/UnFavoriteSvg.vue";
+import { computed } from "vue";
 
-const emit = defineEmits(["delete", "edit","favorite"]);
+const emit = defineEmits(["delete", "edit", "favorite"]);
 
 type Todo = {
   id: number;
@@ -17,6 +19,18 @@ type Todo = {
 const { todos } = defineProps<{
   todos: Todo[];
 }>();
+
+//url表示機能
+const todoWithLinks = computed(() => {
+  return todos.map((todo) => {
+    return {
+      ...todo,
+      parts: linkify.tokenize(todo.content),
+    };
+  });
+});
+
+//
 
 //削除
 async function deleteMemo(id: number) {
@@ -35,37 +49,14 @@ async function edit(id: number, content: string) {
 
 //お気に入りボタンの状態変化
 async function boolfavorite(id: number) {
-  // if (todos[id].favorite) {
-  //   await fetch(`/api/memos/${id}`, {
-  //     method: "PATCH",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({
-  //       favorite: false,
-  //     }),
-  //   });
-  // } else {
-  //   await fetch(`/api/memos/${id}`, {
-  //     method: "PATCH",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({
-  //       favorite: true,
-  //     }),
-  //   });
-  // }
+  const response = await fetch(`/api/memos/${id}/favorite`, {
+    method: "PATCH",
+  });
 
-    const response = await fetch(`/api/memos/${id}/favorite`, {
-        method: "PATCH",
-    });
-
-  emit("favorite")
-    return
+  emit("favorite");
+  return;
 }
 //
-
 </script>
 
 <template>
@@ -80,9 +71,8 @@ async function boolfavorite(id: number) {
     </div>
 
     <ul>
-
-<!--        //お気に入り部分-->
-      <li v-for="todo in todos" :key="todo.id">
+      <!--        //お気に入り部分-->
+      <li v-for="todo in todoWithLinks" :key="todo.id">
         <div class="task" v-if="todo.favorite">
           <div class="favorite">
             <button v-if="todo.favorite" @click="boolfavorite(todo.id)">
@@ -94,13 +84,27 @@ async function boolfavorite(id: number) {
             </button>
 
             <div class="strong">
-              {{ todo.content }}
+              <template v-for="part in todo.parts">
+                <a
+                  v-if="part.t === 'url'"
+                  :href="part.v"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="memo-link"
+                >
+                  {{ part.v }}
+                </a>
+
+                <span v-else>
+                  {{ part.v }}
+                </span>
+              </template>
             </div>
           </div>
 
-<!--          <button @click="deleteMemo(todo.id)" class="trush">-->
-<!--            <TrashSvg />-->
-<!--          </button>-->
+          <!--          <button @click="deleteMemo(todo.id)" class="trush">-->
+          <!--            <TrashSvg />-->
+          <!--          </button>-->
 
           <div class="week">
             {{ todo.created_at }}
@@ -111,44 +115,53 @@ async function boolfavorite(id: number) {
           </div>
         </div>
       </li>
-<!--        //お気に入り部分　終-->
+      <!--        //お気に入り部分　終-->
 
+      <!--        //お気にいられてない部分　開-->
+      <li v-for="todo in todoWithLinks" :key="todo.id">
+        <div class="task" v-if="!todo.favorite">
+          <div class="favorite">
+            <button v-if="todo.favorite" @click="boolfavorite(todo.id)">
+              <FavoriteSvg />
+            </button>
 
+            <button v-else @click="boolfavorite(todo.id)">
+              <UnFavoriteSvg />
+            </button>
 
+            <div class="strong">
+              <template v-for="part in todo.parts">
+                <a
+                  v-if="part.t === 'url'"
+                  :href="part.v"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="memo-link"
+                >
+                  {{ part.v }}
+                </a>
 
-
-<!--        //お気にいられてない部分　開-->
-        <li v-for="todo in todos" :key="todo.id">
-            <div class="task" v-if="!(todo.favorite)">
-                <div class="favorite">
-                    <button v-if="todo.favorite" @click="boolfavorite(todo.id)">
-                        <FavoriteSvg />
-                    </button>
-
-                    <button v-else @click="boolfavorite(todo.id)">
-                        <UnFavoriteSvg />
-                    </button>
-
-                    <div class="strong">
-                        {{ todo.content }}
-                    </div>
-                </div>
-
-                <button @click="deleteMemo(todo.id)" class="trush">
-                    <TrashSvg />
-                </button>
-
-                <div class="week">
-                    {{ todo.created_at }}
-                </div>
-
-                <div class="Edit" @click="edit(todo.id, todo.content)">
-                    <EditSvg />
-                </div>
+                <span v-else>
+                  {{ part.v }}
+                </span>
+              </template>
             </div>
-        </li>
-<!--        //お気にいられていない部分　終-->
+          </div>
 
+          <button @click="deleteMemo(todo.id)" class="trush">
+            <TrashSvg />
+          </button>
+
+          <div class="week">
+            {{ todo.created_at }}
+          </div>
+
+          <div class="Edit" @click="edit(todo.id, todo.content)">
+            <EditSvg />
+          </div>
+        </div>
+      </li>
+      <!--        //お気にいられていない部分　終-->
     </ul>
   </div>
 </template>
@@ -234,5 +247,15 @@ async function boolfavorite(id: number) {
 
 .favorite svg {
   transform: scale(0.8);
+}
+
+.memo-link {
+  color: #1976d2;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.memo-link:hover {
+  opacity: 0.7;
 }
 </style>

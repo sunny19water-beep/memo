@@ -18,10 +18,17 @@ class MemoController extends Controller
     }
 
 
-    public function index()//ここに呼ばれたときにDBの内容を全部jsonにしてContentDisplayに送信する
+    public function index(Request $request)
     {
-        $memos = Memo::all();
-        return response()->json($memos);
+        $search = $request->query('search');
+
+        if ($search) {
+            $memos = Memo::where('content', 'like', '%' . $search . '%')->get();
+            return response()->json($memos);
+        }else{
+            $memos = Memo::all();
+            return response()->json($memos);
+        }
     }
 
     public function destroy(Memo $memo){

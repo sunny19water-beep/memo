@@ -1,41 +1,44 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import SearchSvg from "./svgs/SearchSvg.vue";
-
+const emit = defineEmits(["searched", "initialize"]);
 
 const search_word = ref("");
+const status = ref(false);
 
-function search() {
-  //ここで検索の処理の内容を記述する
+async function search() {
+  const response = await fetch(`/api/memos?search=${encodeURIComponent(search_word.value)}`);
+
+  const data = await response.json();
+
+  emit("searched", data);
+  status.value = !status.value;
 }
 
+function initialize() {
+  search_word.value = "";
+  status.value = !status.value;
+  emit("initialize");
+}
 </script>
 
 <template>
   <div class="outside">
-
     <div class="search">
       <div class="search-box">
         <SearchSvg />
 
-        <input
-          v-model="search_word"
-          type="text"
-          placeholder="メモを検索..."
-        />
+        <input v-model="search_word" type="text" placeholder="メモを検索..." />
 
-        <button @click="search_word">
-          検索
-        </button>
+        <button v-if="status" @click="search" :disabled="search_word === ''">検索</button>
+        <button v-else @click="initialize">リセット</button>
       </div>
     </div>
-
   </div>
 </template>
 
 <style scoped>
 .outside {
-
   width: 90%;
   max-width: 700px;
   margin: 20px auto;
@@ -72,7 +75,6 @@ function search() {
   transition: box-shadow 0.2s;
 }
 
-
 .search-box :deep(svg) {
   width: 20px;
   height: 20px;
@@ -87,7 +89,6 @@ function search() {
   font-size: 15px;
 }
 
-
 .search-box button {
   padding: 7px 14px;
   border: none;
@@ -96,8 +97,4 @@ function search() {
   color: white;
   transition: 0.2s;
 }
-
-
-
-
 </style>

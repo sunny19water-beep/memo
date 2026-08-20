@@ -4,9 +4,10 @@ import SearchSvg from "./svgs/SearchSvg.vue";
 const emit = defineEmits(["searched", "initialize"]);
 
 const search_word = ref("");
-const status = ref(false);
+const status = ref(true);
 
 async function search() {
+  if (status.value === false) {return;}
   const response = await fetch(`/api/memos?search=${encodeURIComponent(search_word.value)}`);
 
   const data = await response.json();
@@ -28,7 +29,12 @@ function initialize() {
       <div class="search-box">
         <SearchSvg />
 
-        <input v-model="search_word" type="text" placeholder="メモを検索..." />
+        <input
+          v-model="search_word"
+          type="text"
+          placeholder="メモを検索...　(Enterで検索）"
+          @keydown.enter.exact.prevent="search"
+        />
 
         <button v-if="status" @click="search" :disabled="search_word === ''">検索</button>
         <button v-else @click="initialize">リセット</button>

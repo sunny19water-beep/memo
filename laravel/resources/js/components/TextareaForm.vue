@@ -2,10 +2,12 @@
 import { ref, watch } from "vue";
 import PlusSvg from "./svgs/PlusSvg.vue";
 import MicSvg from "./svgs/MicSvg.vue";
+import AiSummarySvg from "./svgs/AiSummarySvg.vue";
 
 const sentence = ref("");
 const isRecording = ref(false);
 const emit = defineEmits(["saved", "edited"]);
+const status_summary = ref(false);
 
 // 音声認識
 const SpeechRecognition =
@@ -16,7 +18,6 @@ const recognition = new SpeechRecognition();
 recognition.lang = "ja-JP";
 recognition.continuous = false;
 recognition.interimResults = false;
-
 
 function toggleRecognition() {
   if (isRecording.value) {
@@ -32,9 +33,6 @@ recognition.onstart = () => {
 recognition.onend = () => {
   isRecording.value = false;
 };
-
-
-
 
 recognition.onresult = (event: any) => {
   const text = event.results[0][0].transcript;
@@ -107,6 +105,18 @@ async function save() {
   emit("saved");
 }
 //
+
+//AI要約
+async function summarize() {
+  if (sentence.value.length < 30) {
+    return;
+    //ここに30文字以上です...みたいなことを表示指せれたらしたい
+  }
+  status_summary.value = !status_summary.value;
+  //ここにjsonの処理と返り値をテキストエリアに反映させる機能を書く
+
+  status_summary.value = !status_summary.value;
+}
 </script>
 
 <template>
@@ -115,6 +125,7 @@ async function save() {
       <PlusSvg />
       <h2 v-if="editingMemo" class="change">編集中...　(メモを保存が押されたら更新されます）</h2>
       <h2 v-else-if="isRecording" class="change">録音中... (もう一回押すと録音は止まります）</h2>
+      <h2 v-else-if="status_summary" class="change">AI要約中...(少々お待ちください）</h2>
       <h2 v-else>新しいメモ</h2>
     </div>
 
@@ -125,19 +136,25 @@ async function save() {
         :class="{ active: sentence !== '' }"
         @keydown.enter.exact.prevent="save"
         placeholder="メモを入力してください...
-    (Enterで保存、Shift+Enterで改行)"
+またAI要約機能は30文字以上のときのみ使用できます
+(Enterで保存、Shift+Enterで改行)"
       ></textarea>
     </div>
 
     <div class="save">
-      <button @click="toggleRecognition">
-        <MicSvg />
-        {{ isRecording ? "録音停止" : "音声入力" }}
+      <button @click="summarize">
+        <AiSummarySvg />
+        AI要約
       </button>
 
       <button @click="save" :disabled="sentence.trim() === ''">
         <PlusSvg />
         メモを保存
+      </button>
+
+      <button @click="toggleRecognition">
+        <MicSvg />
+        {{ isRecording ? "録音停止" : "音声入力" }}
       </button>
     </div>
   </div>

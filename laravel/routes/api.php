@@ -12,3 +12,4 @@ Route::get('/memos', [MemoController::class, 'index']);
 Route::delete('/memos/{memo}', [MemoController::class, 'destroy']);
 Route::put('/memos/{memo}', [MemoController::class, 'update']);
 Route::patch('/memos/{memo}/favorite', [MemoController::class, 'favorite']);
+Route::post('/summarize', [MemoController::class, 'summarize']);

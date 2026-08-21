@@ -110,9 +110,6 @@ async function boolfavorite(id: number) {
             {{ todo.created_at }}
           </div>
 
-          <div class="Edit" @click="edit(todo.id, todo.content)">
-            <EditSvg />
-          </div>
         </div>
       </li>
       <!--        //お気に入り部分　終-->

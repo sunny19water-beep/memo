@@ -108,14 +108,38 @@ async function save() {
 
 //AI要約
 async function summarize() {
-  if (sentence.value.length < 30) {
-    return;
-    //ここに30文字以上です...みたいなことを表示指せれたらしたい
-  }
-  status_summary.value = !status_summary.value;
-  //ここにjsonの処理と返り値をテキストエリアに反映させる機能を書く
+    if (sentence.value.length < 30) {
+        return;
+    }
 
-  status_summary.value = !status_summary.value;
+    status_summary.value = true;
+
+    try {
+        console.log("AI要約リクエスト開始");
+
+        const response = await fetch("/api/summarize", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                content: sentence.value,
+            }),
+        });
+
+        console.log("Laravelからレスポンスが返ってきた");
+        console.log("status:", response.status);
+
+        const data = await response.json();
+
+        console.log("summary:", data.summary);
+
+        sentence.value = data.summary;
+    } catch (error) {
+        console.error("AI要約エラー:", error);
+    } finally {
+        status_summary.value = false;
+    }
 }
 </script>
 
